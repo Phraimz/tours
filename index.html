@@ -1,133 +1,48 @@
 <!DOCTYPE html>
-<html>
-	<head>
-		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
-		<title></title>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
-		<meta name="apple-mobile-web-app-capable" content="yes" />
-		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
-		<meta property="og:title" content="">
-		<meta property="og:description" content="">
-		<meta name="mobile-web-app-capable" content="yes" />
-		<meta property="og:image" content="preview.jpg">
-		<style type="text/css" title="Default">
-			/* fullscreen */
-			html {
-				height:100%;
-			}
-			body {
-				height:100%;
-				margin: 0px;
-				background: black;
-				color: white;
-				overflow:hidden; /* disable scrollbars */
-				-webkit-tap-highlight-color: rgba(0, 0, 0, 0); /* remove highlight on tab for iOS/Android */
-			}
-			/* fix for scroll bars on webkit & >=Mac OS X Lion */
-			::-webkit-scrollbar {
-				background-color: rgba(0,0,0,0.5);
-				width: 0.75em;
-				height: 0.75em;
-			}
-			::-webkit-scrollbar-thumb {
-				background-color:  rgba(255,255,255,0.5);
-			}
-		</style>
-	</head>
-	<body>
-<!-- - - - - - - 8<- - - - - - cut here - - - - - 8<- - - - - - - -->
-		<script type="text/javascript" src="pano2vr_player.js?ts=30158018">
-		</script>
-		<script type="text/javascript" src="skin.js?ts=30158018">
-		</script>
-		<script src="https://www.youtube.com/iframe_api"></script>
-		<script src="https://player.vimeo.com/api/player.js"></script>
-		<script src="3rdparty/lottie/lottie.min.js"></script>
-		<div id="container" style="width:100%;height:100%;overflow:hidden;">
-		<br>Loading...<br><br>
-		</div>
-		<script type="text/javascript">
-		function parseParams(paramsString, params) {
-			paramsString = paramsString.substring(1);
-			var firstSeparatorPos = paramsString.indexOf(",");
-			if (firstSeparatorPos != -1) {
-				params.startNode = paramsString.slice(0, firstSeparatorPos);
-				var viewingParamsString = paramsString.slice(firstSeparatorPos + 1);
-				var viewingParams = viewingParamsString.split(",");
-				if (viewingParams.length >= 3) {
-					var startView = {};
-					startView["pan"] = viewingParams[0];
-					startView["tilt"] = viewingParams[1];
-					startView["fov"] = viewingParams[2];
-					if (viewingParams.length >= 4) {
-						startView["projection"] = viewingParams[3];
-					}
-					params.startView = startView;
-				}
-			} else {
-				params.startNode = paramsString;
-				params.startView = "";
-			}
-		}
-		var params = {};
-		parseParams(document.location.hash, params);
-		var startNode = params.startNode;
-		var startView = params.startView;
-		if (("onhashchange" in window) && (!(/MSIE (\d+\.\d+);/.test(navigator.userAgent)))) {
-			window.onhashchange = function () {
-				parseParams(window.location.hash, params);
-				pano.openNext('{' + params.startNode + '}', params.startView);
-			}
-		} else {
-			var lastHash = window.location.hash;
-			window.setInterval(function () {
-				if (window.location.hash != lastHash) {
-					lastHash = window.location.hash;
-					parseParams(window.location.hash, params);
-					pano.openNext('{' + params.startNode + '}', params.startView);
-				}
-			}, 100);
-		}
-			// create the panorama player with the container
-			pano=new pano2vrPlayer("container");
-			pano.startNode = startNode;
-			pano.startView = startView;
-			pano.setQueryParameter("ts=30158018")
-			// add the skin object
-			skin=new pano2vrSkin(pano);
-			// load the configuration
-			window.addEventListener("load", function() {
-				pano.readConfigUrlAsync("pano.xml?ts=30158018");
-			});
-			if (window.navigator.userAgent.match(/Safari/i)) {
-				// fix for white borders, rotation on iPhone
-				function iosHfix(e) {
-					window.scrollTo(0, 1);
-					var container=document.getElementById("container");
-					var oh=container.offsetHeight;
-					document.documentElement.style.setProperty('height', '100vh');
-					if (oh!=container.offsetHeight) {
-						container.style.setProperty('height',"100%");
-					} else {
-						container.style.setProperty('height',window.innerHeight+"px");
-					}
-					window.scrollTo(0, 0);
-					pano.setViewerSize(container.offsetWidth, container.offsetHeight);
-				};
-				setTimeout(iosHfix,0);
-				setTimeout(iosHfix,100);
-				window.addEventListener("resize", function() {
-					setTimeout(iosHfix,0);
-					// hide toolbar on iPad happens with a delay
-					setTimeout(iosHfix,500);
-					setTimeout(iosHfix,1000);
-					setTimeout(iosHfix,2000);
-				});
-			}
-		</script>
-		<noscript>
-			<p><b>Please enable Javascript!</b></p>
-		</noscript>
-<!-- - - - - - - 8<- - - - - - cut here - - - - - 8<- - - - - - - -->
-	</body>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Phraimz Virtual Spaces | Signature Luxury Tours</title>
+<meta name="description" content="Ultra-premium cinematic virtual tours for elite real estate and hospitality brands.">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}body{font-family:Inter,Arial,sans-serif;background:#050505;color:#fff;overflow-x:hidden}a{text-decoration:none;color:inherit}.nav{position:fixed;top:0;left:0;width:100%;padding:22px 40px;display:flex;justify-content:space-between;align-items:center;z-index:99;background:linear-gradient(to bottom,rgba(0,0,0,.65),transparent)}.brand{letter-spacing:4px;font-size:12px;color:#d6b25e}.menu{display:flex;gap:24px;color:#ddd}.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;padding:40px;background:url('preview.jpg') center/cover no-repeat}.hero:before{content:'';position:absolute;inset:0;background:radial-gradient(circle at center,rgba(255,255,255,.08),rgba(0,0,0,.82) 60%,#000)}.glass{position:relative;z-index:2;max-width:980px;text-align:center;padding:48px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);backdrop-filter:blur(12px);border-radius:32px;animation:rise 1.4s ease}.eyebrow{letter-spacing:5px;font-size:12px;color:#d6b25e}.headline{font-size:78px;line-height:1.02;font-weight:700;margin:18px 0}.sub{font-size:20px;color:#d9d9d9;max-width:760px;margin:0 auto 34px}.btns{display:flex;gap:18px;justify-content:center;flex-wrap:wrap}.btn{padding:16px 30px;border-radius:999px;font-weight:700;transition:.3s}.gold{background:linear-gradient(135deg,#e9cf8b,#b9923f);color:#111}.ghost{border:1px solid rgba(255,255,255,.2)}.btn:hover{transform:translateY(-3px)}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:1100px;margin:0 auto;padding:60px 24px}.metric{padding:28px;border-radius:26px;background:#101010;border:1px solid rgba(255,255,255,.06)}.num{font-size:42px;color:#e1c37a;font-weight:700}.section{padding:90px 24px}.center{text-align:center}.tourbox{max-width:1280px;margin:34px auto;border-radius:28px;overflow:hidden;border:1px solid rgba(255,255,255,.08);box-shadow:0 30px 80px rgba(0,0,0,.45)}iframe{width:100%;height:82vh;border:0}.cta{padding:110px 24px;text-align:center;background:linear-gradient(180deg,#0a0a0a,#111)}.cta h2{font-size:56px;margin-bottom:18px}.cta p{font-size:20px;color:#d0d0d0;margin-bottom:28px}.wa{position:fixed;right:24px;bottom:24px;background:#25D366;color:#fff;padding:15px 20px;border-radius:999px;font-weight:700;z-index:99}.footer{padding:30px 24px;color:#777;text-align:center}@keyframes rise{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}@media(max-width:900px){.headline{font-size:54px}.metrics{grid-template-columns:1fr}.cta h2{font-size:40px}}@media(max-width:640px){.nav{padding:18px 20px}.menu{display:none}.headline{font-size:40px}.sub{font-size:18px}.glass{padding:28px}}
+</style>
+</head>
+<body>
+<nav class='nav'>
+<div class='brand'>PHRAIMZ SIGNATURE</div>
+<div class='menu'><a href='#tour'>Experience</a><a href='#contact'>Contact</a></div>
+</nav>
+<section class='hero'>
+<div class='glass'>
+<div class='eyebrow'>ULTRA LUXURY VIRTUAL EXPERIENCES</div>
+<h1 class='headline'>Where Premium Spaces Meet Digital Prestige.</h1>
+<p class='sub'>Immersive cinematic 360° tours crafted for elite developers, luxury realtors, hotels and visionary brands that demand world-class presentation.</p>
+<div class='btns'>
+<a class='btn gold' href='#tour'>Enter Experience</a>
+<a class='btn ghost' href='https://wa.me/2347066456141'>Private Consultation</a>
+</div>
+</div>
+</section>
+<section class='metrics'>
+<div class='metric'><div class='num'>360°</div><p>Immersive navigation that keeps prospects engaged longer.</p></div>
+<div class='metric'><div class='num'>24/7</div><p>Sell properties globally even while you sleep.</p></div>
+<div class='metric'><div class='num'>∞</div><p>Luxury perception that elevates your brand instantly.</p></div>
+</section>
+<section class='section center' id='tour'>
+<h2 style='font-size:56px'>The Signature Experience</h2>
+<p style='color:#cfcfcf;font-size:20px;margin-top:12px'>Step inside and explore every detail.</p>
+<div class='tourbox'><iframe src='pano.html'></iframe></div>
+</section>
+<section class='cta' id='contact'>
+<h2>Command Attention. Close Premium Clients.</h2>
+<p>For developments, penthouses, hotels, estates and landmark spaces.</p>
+<div class='btns'>
+<a class='btn gold' href='https://wa.me/2347066456141'>Request Proposal</a>
+</div>
+</section>
+<div class='footer'>© Phraimz Virtual Spaces — Signature Digital Presentation</div>
+<a class='wa' href='https://wa.me/2347066456141'>WhatsApp</a>
+</body>
 </html>
