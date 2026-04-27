@@ -1,133 +1,277 @@
 <!DOCTYPE html>
-<html>
-	<head>
-		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
-		<title></title>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
-		<meta name="apple-mobile-web-app-capable" content="yes" />
-		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
-		<meta property="og:title" content="">
-		<meta property="og:description" content="">
-		<meta name="mobile-web-app-capable" content="yes" />
-		<meta property="og:image" content="preview.jpg">
-		<style type="text/css" title="Default">
-			/* fullscreen */
-			html {
-				height:100%;
-			}
-			body {
-				height:100%;
-				margin: 0px;
-				background: black;
-				color: white;
-				overflow:hidden; /* disable scrollbars */
-				-webkit-tap-highlight-color: rgba(0, 0, 0, 0); /* remove highlight on tab for iOS/Android */
-			}
-			/* fix for scroll bars on webkit & >=Mac OS X Lion */
-			::-webkit-scrollbar {
-				background-color: rgba(0,0,0,0.5);
-				width: 0.75em;
-				height: 0.75em;
-			}
-			::-webkit-scrollbar-thumb {
-				background-color:  rgba(255,255,255,0.5);
-			}
-		</style>
-	</head>
-	<body>
-<!-- - - - - - - 8<- - - - - - cut here - - - - - 8<- - - - - - - -->
-		<script type="text/javascript" src="pano2vr_player.js?ts=11077351">
-		</script>
-		<script type="text/javascript" src="skin.js?ts=11077351">
-		</script>
-		<script src="https://www.youtube.com/iframe_api"></script>
-		<script src="https://player.vimeo.com/api/player.js"></script>
-		<script src="3rdparty/lottie/lottie.min.js"></script>
-		<div id="container" style="width:100%;height:100%;overflow:hidden;">
-		<br>Loading...<br><br>
-		</div>
-		<script type="text/javascript">
-		function parseParams(paramsString, params) {
-			paramsString = paramsString.substring(1);
-			var firstSeparatorPos = paramsString.indexOf(",");
-			if (firstSeparatorPos != -1) {
-				params.startNode = paramsString.slice(0, firstSeparatorPos);
-				var viewingParamsString = paramsString.slice(firstSeparatorPos + 1);
-				var viewingParams = viewingParamsString.split(",");
-				if (viewingParams.length >= 3) {
-					var startView = {};
-					startView["pan"] = viewingParams[0];
-					startView["tilt"] = viewingParams[1];
-					startView["fov"] = viewingParams[2];
-					if (viewingParams.length >= 4) {
-						startView["projection"] = viewingParams[3];
-					}
-					params.startView = startView;
-				}
-			} else {
-				params.startNode = paramsString;
-				params.startView = "";
-			}
-		}
-		var params = {};
-		parseParams(document.location.hash, params);
-		var startNode = params.startNode;
-		var startView = params.startView;
-		if (("onhashchange" in window) && (!(/MSIE (\d+\.\d+);/.test(navigator.userAgent)))) {
-			window.onhashchange = function () {
-				parseParams(window.location.hash, params);
-				pano.openNext('{' + params.startNode + '}', params.startView);
-			}
-		} else {
-			var lastHash = window.location.hash;
-			window.setInterval(function () {
-				if (window.location.hash != lastHash) {
-					lastHash = window.location.hash;
-					parseParams(window.location.hash, params);
-					pano.openNext('{' + params.startNode + '}', params.startView);
-				}
-			}, 100);
-		}
-			// create the panorama player with the container
-			pano=new pano2vrPlayer("container");
-			pano.startNode = startNode;
-			pano.startView = startView;
-			pano.setQueryParameter("ts=11077351")
-			// add the skin object
-			skin=new pano2vrSkin(pano);
-			// load the configuration
-			window.addEventListener("load", function() {
-				pano.readConfigUrlAsync("pano.xml?ts=11077351");
-			});
-			if (window.navigator.userAgent.match(/Safari/i)) {
-				// fix for white borders, rotation on iPhone
-				function iosHfix(e) {
-					window.scrollTo(0, 1);
-					var container=document.getElementById("container");
-					var oh=container.offsetHeight;
-					document.documentElement.style.setProperty('height', '100vh');
-					if (oh!=container.offsetHeight) {
-						container.style.setProperty('height',"100%");
-					} else {
-						container.style.setProperty('height',window.innerHeight+"px");
-					}
-					window.scrollTo(0, 0);
-					pano.setViewerSize(container.offsetWidth, container.offsetHeight);
-				};
-				setTimeout(iosHfix,0);
-				setTimeout(iosHfix,100);
-				window.addEventListener("resize", function() {
-					setTimeout(iosHfix,0);
-					// hide toolbar on iPad happens with a delay
-					setTimeout(iosHfix,500);
-					setTimeout(iosHfix,1000);
-					setTimeout(iosHfix,2000);
-				});
-			}
-		</script>
-		<noscript>
-			<p><b>Please enable Javascript!</b></p>
-		</noscript>
-<!-- - - - - - - 8<- - - - - - cut here - - - - - 8<- - - - - - - -->
-	</body>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Ephraim Tours | Luxury Virtual Experiences</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+html,body{
+width:100%;
+height:100%;
+font-family:'Poppins',sans-serif;
+overflow:hidden;
+background:#000;
+color:#fff;
+}
+
+/* Background */
+.hero-bg{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:
+linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
+url('preview.jpg') center center/cover no-repeat;
+transform:scale(1.08);
+animation:zoomBg 12s ease-in-out infinite alternate;
+z-index:-2;
+}
+
+.glow{
+position:fixed;
+inset:0;
+background:radial-gradient(circle at top right, rgba(212,175,55,.18), transparent 35%),
+radial-gradient(circle at bottom left, rgba(255,255,255,.08), transparent 30%);
+z-index:-1;
+}
+
+/* Nav */
+.nav{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+padding:24px 48px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+backdrop-filter:blur(10px);
+background:rgba(0,0,0,.15);
+}
+
+.logo{
+font-size:24px;
+font-weight:700;
+letter-spacing:2px;
+}
+
+.menu{
+display:flex;
+gap:28px;
+font-size:14px;
+opacity:.9;
+}
+
+.menu span{
+cursor:pointer;
+transition:.3s;
+}
+
+.menu span:hover{
+opacity:.65;
+}
+
+/* Hero */
+.hero{
+height:100%;
+display:flex;
+justify-content:center;
+align-items:center;
+text-align:center;
+padding:30px;
+}
+
+.box{
+max-width:950px;
+animation:fadeUp 1.2s ease;
+}
+
+.tag{
+font-size:13px;
+letter-spacing:5px;
+opacity:.8;
+margin-bottom:18px;
+}
+
+h1{
+font-size:78px;
+line-height:1.03;
+font-weight:700;
+margin-bottom:22px;
+}
+
+p{
+font-size:21px;
+line-height:1.7;
+opacity:.9;
+max-width:760px;
+margin:auto;
+margin-bottom:38px;
+}
+
+/* Buttons */
+.actions{
+display:flex;
+justify-content:center;
+gap:18px;
+flex-wrap:wrap;
+}
+
+.btn{
+padding:18px 38px;
+border:none;
+border-radius:50px;
+font-size:16px;
+font-weight:600;
+cursor:pointer;
+transition:.35s;
+}
+
+.primary{
+background:linear-gradient(135deg,#d4af37,#f4e19d);
+color:#000;
+box-shadow:0 12px 30px rgba(212,175,55,.22);
+}
+
+.primary:hover{
+transform:translateY(-4px);
+}
+
+.secondary{
+background:rgba(255,255,255,.08);
+color:#fff;
+border:1px solid rgba(255,255,255,.15);
+backdrop-filter:blur(8px);
+}
+
+.secondary:hover{
+background:rgba(255,255,255,.14);
+}
+
+/* Bottom card */
+.badge{
+position:fixed;
+right:24px;
+bottom:24px;
+padding:14px 18px;
+border-radius:18px;
+font-size:13px;
+background:rgba(255,255,255,.08);
+backdrop-filter:blur(10px);
+}
+
+/* Loader */
+.loader{
+position:fixed;
+inset:0;
+background:#000;
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:18px;
+letter-spacing:4px;
+z-index:999;
+animation:hideLoader 2s forwards;
+}
+
+/* Animations */
+@keyframes fadeUp{
+from{opacity:0;transform:translateY(40px);}
+to{opacity:1;transform:translateY(0);}
+}
+
+@keyframes zoomBg{
+from{transform:scale(1.05);}
+to{transform:scale(1.12);}
+}
+
+@keyframes hideLoader{
+0%,70%{opacity:1;visibility:visible;}
+100%{opacity:0;visibility:hidden;}
+}
+
+/* Mobile */
+@media(max-width:768px){
+
+.nav{
+padding:18px 22px;
+}
+
+.menu{
+display:none;
+}
+
+h1{
+font-size:44px;
+}
+
+p{
+font-size:16px;
+}
+
+.btn{
+width:100%;
+}
+
+.actions{
+flex-direction:column;
+}
+}
+</style>
+</head>
+
+<body>
+
+<div class="loader">LOADING EXPERIENCE...</div>
+
+<div class="hero-bg"></div>
+<div class="glow"></div>
+
+<nav class="nav">
+<div class="logo">EPHRAIM TOURS</div>
+<div class="menu">
+<span>Home</span>
+<span>Projects</span>
+<span>Pricing</span>
+<span>Contact</span>
+</div>
+</nav>
+
+<section class="hero">
+<div class="box">
+<div class="tag">PREMIUM IMMERSIVE EXPERIENCES</div>
+
+<h1>Luxury Spaces.<br>Digitally Reimagined.</h1>
+
+<p>
+Showcase homes, estates, hotels and commercial spaces with cinematic 360° virtual tours that impress clients instantly.
+</p>
+
+<div class="actions">
+<button class="btn primary" onclick="window.location.href='tour.html'">
+Enter Tour
+</button>
+
+<button class="btn secondary" onclick="window.location.href='https://wa.me/'">
+Book Demo
+</button>
+</div>
+</div>
+</section>
+
+<div class="badge">360° Tours • Drone • Branding</div>
+
+</body>
 </html>
