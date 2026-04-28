@@ -8,25 +8,18 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
 
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     html, body {
       height: 100%;
       overflow: hidden;
       touch-action: none;
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
       background: #000;
+      font-family: 'Inter', sans-serif;
       color: #fff;
     }
 
-    /* PERFORMANCE BOOST */
+    /* GPU OPTIMIZATION */
     #bg, #overlay, #title, #subtitle {
       will-change: transform;
     }
@@ -44,24 +37,19 @@
       transition: opacity 1s ease, visibility 1s ease;
     }
 
-    .loader.hidden {
-      opacity: 0;
-      visibility: hidden;
-    }
+    .loader.hidden { opacity: 0; visibility: hidden; }
 
     .loader-title {
       font-family: 'Playfair Display', serif;
       font-size: 26px;
-      letter-spacing: 3px;
       margin-bottom: 18px;
       animation: pulse 1.4s infinite;
     }
 
     .loader-percent {
       font-size: 14px;
-      letter-spacing: 2px;
-      margin-bottom: 20px;
       opacity: 0.8;
+      margin-bottom: 20px;
     }
 
     .loader-bar {
@@ -69,19 +57,16 @@
       height: 2px;
       background: rgba(255,255,255,0.15);
       overflow: hidden;
-      border-radius: 2px;
     }
 
     .loader-bar-fill {
       height: 100%;
       width: 0%;
-      background: white;
-      transition: width 0.2s linear;
+      background: #fff;
     }
 
     @keyframes pulse {
-      0%, 100% { opacity: 0.5; }
-      50% { opacity: 1; }
+      0%,100%{opacity:0.5;}50%{opacity:1;}
     }
 
     /* TOUR LOADER */
@@ -96,48 +81,38 @@
       z-index: 10000;
       opacity: 0;
       visibility: hidden;
-      transition: opacity 0.4s ease;
+      transition: 0.4s ease;
     }
 
-    .tour-loader.active {
-      opacity: 1;
-      visibility: visible;
-    }
+    .tour-loader.active { opacity: 1; visibility: visible; }
 
     .spinner {
       width: 40px;
       height: 40px;
       border: 2px solid rgba(255,255,255,0.2);
-      border-top: 2px solid white;
+      border-top: 2px solid #fff;
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     /* BACKGROUND */
     .bg {
       position: fixed;
       inset: 0;
       background: url('https://images.unsplash.com/photo-1496307653780-42ee777d4833?auto=format&fit=crop&w=1920&q=80')
-        center/cover no-repeat;
+      center/cover no-repeat;
       filter: blur(16px) brightness(0.5);
       transform: scale(1.15);
-      transition: filter 1.5s ease, transform 1.5s ease;
-    }
-
-    body.loaded .bg {
-      filter: blur(8px) brightness(0.6);
-      transform: scale(1.08);
+      transition: 1.5s ease;
     }
 
     .overlay {
       position: fixed;
       inset: 0;
-      background: radial-gradient(circle at center, rgba(0,0,0,0.25), rgba(0,0,0,0.92));
+      background: radial-gradient(circle, rgba(0,0,0,0.2), rgba(0,0,0,0.92));
     }
 
     /* HERO */
@@ -153,7 +128,7 @@
       padding: 20px;
       opacity: 0;
       transform: scale(1.05);
-      transition: opacity 1.2s ease, transform 1.2s ease;
+      transition: 1s ease;
     }
 
     body.loaded .hero {
@@ -189,11 +164,10 @@
       background: rgba(255,255,255,0.05);
       color: #fff;
       font-size: 13px;
-      letter-spacing: 1.5px;
       cursor: pointer;
-      transition: 0.3s ease;
       backdrop-filter: blur(10px);
       text-decoration: none;
+      transition: 0.3s;
     }
 
     .btn:hover {
@@ -201,11 +175,9 @@
       background: rgba(255,255,255,0.15);
     }
 
-    .btn.primary {
-      background: rgba(255,255,255,0.18);
-    }
+    .btn.primary { background: rgba(255,255,255,0.18); }
 
-    /* TRANSITION EFFECT */
+    /* TRANSITION */
     .transition {
       position: fixed;
       width: 100px;
@@ -216,7 +188,7 @@
       left: 50%;
       transform: translate(-50%, -50%) scale(0);
       z-index: 10;
-      transition: transform 1.2s ease;
+      transition: 1.2s ease;
     }
 
     .transition.active {
@@ -225,14 +197,8 @@
 
     /* MOBILE */
     @media (max-width: 768px) {
-      .title {
-        font-size: 38px;
-      }
-
-      .bg {
-        filter: blur(10px) brightness(0.55);
-        transform: scale(1.1);
-      }
+      .title { font-size: 38px; }
+      .bg { filter: blur(10px) brightness(0.55); }
     }
   </style>
 </head>
@@ -259,9 +225,7 @@
 
   <div class="hero">
     <h1 class="title" id="title">Phraimz Concepts</h1>
-    <p class="subtitle" id="subtitle">
-      Experience architectural spaces before they exist.
-    </p>
+    <p class="subtitle" id="subtitle">Experience architectural spaces before they exist.</p>
 
     <div class="cta-group">
       <button class="btn primary" onclick="enterTour()">ENTER TOUR</button>
@@ -273,84 +237,109 @@
 
   <div class="transition" id="transition"></div>
 
-  <script>
-    /* LOADER ANIMATION */
-    let progress = 0;
-    const bar = document.getElementById('bar');
-    const percent = document.getElementById('percent');
-    const loader = document.getElementById('loader');
+<script>
+/* ================= LOADER ================= */
+let progress = 0;
+const bar = document.getElementById('bar');
+const percent = document.getElementById('percent');
+const loader = document.getElementById('loader');
 
-    const interval = setInterval(() => {
-      progress += Math.floor(Math.random() * 8) + 2;
-      if (progress >= 100) progress = 100;
+const load = setInterval(() => {
+  progress += Math.random() * 10;
+  if (progress >= 100) progress = 100;
 
-      bar.style.width = progress + "%";
-      percent.innerText = progress + "%";
+  bar.style.width = progress + "%";
+  percent.innerText = Math.floor(progress) + "%";
 
-      if (progress === 100) {
-        clearInterval(interval);
-        setTimeout(() => {
-          loader.classList.add('hidden');
-          document.body.classList.add('loaded');
-        }, 500);
-      }
-    }, 120);
+  if (progress === 100) {
+    clearInterval(load);
+    setTimeout(() => {
+      loader.classList.add('hidden');
+      document.body.classList.add('loaded');
+    }, 500);
+  }
+}, 100);
 
-    /* TOUR TRANSITION */
-    function enterTour() {
-      const tourLoader = document.getElementById('tourLoader');
-      tourLoader.classList.add('active');
+/* ================= TOUR ================= */
+function enterTour() {
+  document.getElementById('tourLoader').classList.add('active');
 
-      setTimeout(() => {
-        document.getElementById('transition').classList.add('active');
-      }, 600);
+  setTimeout(() => {
+    document.getElementById('transition').classList.add('active');
+  }, 600);
 
-      setTimeout(() => {
-        window.location.href = "tour.html";
-      }, 1500);
-    }
+  setTimeout(() => {
+    window.location.href = "tour.html";
+  }, 1500);
+}
 
-    function bookConsultation() {
-      alert("Booking system coming soon. Use WhatsApp for now.");
-    }
+function bookConsultation() {
+  alert("Use WhatsApp for now. Booking system coming soon.");
+}
 
-    /* PARALLAX (DESKTOP + MOBILE + GYRO) */
-    function updateParallax(x, y) {
-      document.getElementById('bg').style.transform =
-        `translate(${x * 20}px,${y * 20}px) scale(1.15)`;
+/* ================= PARALLAX ENGINE ================= */
+function updateParallax(x, y) {
+  document.getElementById('bg').style.transform =
+    `translate(${x*30}px,${y*30}px) scale(1.15)`;
 
-      document.getElementById('overlay').style.transform =
-        `translate(${x * 10}px,${y * 10}px)`;
+  document.getElementById('overlay').style.transform =
+    `translate(${x*15}px,${y*15}px)`;
 
-      document.getElementById('title').style.transform =
-        `translate(${x * 15}px,${y * 15}px)`;
+  document.getElementById('title').style.transform =
+    `translate(${x*10}px,${y*10}px)`;
 
-      document.getElementById('subtitle').style.transform =
-        `translate(${x * 10}px,${y * 10}px)`;
-    }
+  document.getElementById('subtitle').style.transform =
+    `translate(${x*6}px,${y*6}px)`;
+}
 
-    /* Desktop */
-    document.addEventListener('mousemove', (e) => {
-      const x = (e.clientX / window.innerWidth) - 0.5;
-      const y = (e.clientY / window.innerHeight) - 0.5;
-      updateParallax(x, y);
-    });
+/* ================= DESKTOP ================= */
+document.addEventListener('mousemove', (e) => {
+  const x = (e.clientX / window.innerWidth) - 0.5;
+  const y = (e.clientY / window.innerHeight) - 0.5;
+  updateParallax(x, y);
+});
 
-    /* Mobile touch */
-    document.addEventListener('touchmove', (e) => {
-      const t = e.touches[0];
-      const x = (t.clientX / window.innerWidth) - 0.5;
-      const y = (t.clientY / window.innerHeight) - 0.5;
-      updateParallax(x, y);
-    }, { passive: true });
+/* ================= MOBILE TOUCH ================= */
+document.addEventListener('touchmove', (e) => {
+  const t = e.touches[0];
+  const x = (t.clientX / window.innerWidth) - 0.5;
+  const y = (t.clientY / window.innerHeight) - 0.5;
+  updateParallax(x, y);
+}, { passive: true });
 
-    /* Gyroscope */
-    window.addEventListener('deviceorientation', (e) => {
-      const x = (e.gamma || 0) / 45;
-      const y = (e.beta || 0) / 45;
-      updateParallax(x, y);
-    });
-  </script>
+/* ================= GYROSCOPE (UPGRADED) ================= */
+let baseGamma = 0;
+let baseBeta = 0;
+let ready = false;
+
+let cx = 0, cy = 0;
+
+function clamp(v, min, max) {
+  return Math.max(min, Math.min(max, v));
+}
+
+function smooth(tx, ty) {
+  cx += (tx - cx) * 0.08;
+  cy += (ty - cy) * 0.08;
+  updateParallax(cx, cy);
+}
+
+window.addEventListener('deviceorientation', (e) => {
+  if (!ready) {
+    baseGamma = e.gamma || 0;
+    baseBeta = e.beta || 0;
+    ready = true;
+  }
+
+  let x = ((e.gamma || 0) - baseGamma) / 18;
+  let y = ((e.beta || 0) - baseBeta) / 18;
+
+  x = clamp(x, -1, 1);
+  y = clamp(y, -1, 1);
+
+  smooth(x, y);
+});
+</script>
 
 </body>
 </html>
