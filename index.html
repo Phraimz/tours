@@ -68,7 +68,6 @@ html,body{
   width:260px;height:2px;
   background:rgba(255,255,255,.15);
   margin:20px auto 0;
-  overflow:hidden;
 }
 .loading-fill{height:100%;width:0%;background:#fff}
 
@@ -99,7 +98,18 @@ html,body{
   overflow:hidden;
 }
 
-/* background */
+/* ===== BACKGROUND IMAGE (INITIAL) ===== */
+.bg-fallback{
+  position:absolute;
+  inset:0;
+  background:url('https://images.unsplash.com/photo-1496307653780-42ee777d4833?auto=format&fit=crop&w=1920&q=80')
+  center/cover no-repeat;
+  filter:blur(12px) brightness(.55);
+  transform:scale(1.2);
+  z-index:0;
+}
+
+/* ===== VIDEO OVERLAY ===== */
 .bg-video{
   position:absolute;
   inset:0;
@@ -108,21 +118,16 @@ html,body{
   object-fit:cover;
   filter:blur(10px) brightness(.5);
   transform:scale(1.1);
-}
-
-.bg-fallback{
-  position:absolute;
-  inset:-10%;
-  background:url('https://images.unsplash.com/photo-1496307653780-42ee777d4833?auto=format&fit=crop&w=1920&q=80')
-  center/cover no-repeat;
-  filter:blur(12px) brightness(.55);
-  transform:scale(1.2);
+  z-index:1;
+  opacity:0;
+  transition:opacity 1.5s ease;
 }
 
 .overlay{
   position:absolute;
   inset:0;
   background:radial-gradient(circle, rgba(0,0,0,.2), rgba(0,0,0,.92));
+  z-index:2;
 }
 
 /* ===== SCENE ===== */
@@ -131,6 +136,7 @@ html,body{
   inset:0;
   transform-style:preserve-3d;
   transition:transform .08s linear;
+  z-index:3;
 }
 
 /* ===== HERO ===== */
@@ -177,17 +183,10 @@ html,body{
   cursor:pointer;
   transition:.3s;
 }
-.btn:hover{
-  transform:scale(1.08);
-  background:rgba(255,255,255,.15);
-}
+.btn:hover{transform:scale(1.08);background:rgba(255,255,255,.15)}
 
-/* particles */
-.particles{
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-}
+/* ===== PARTICLES ===== */
+.particles{position:absolute;inset:0;pointer-events:none}
 .particles span{
   position:absolute;
   width:2px;height:2px;
@@ -200,6 +199,56 @@ html,body{
   10%{opacity:1}
   to{transform:translateY(-10vh);opacity:0}
 }
+
+/* ===== MODAL ===== */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.7);
+  backdrop-filter:blur(15px);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:30000;
+}
+.modal.active{display:flex}
+
+.modal-box{
+  width:90%;
+  max-width:420px;
+  padding:30px;
+  border-radius:20px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.15);
+  backdrop-filter:blur(20px);
+}
+
+.modal-box h2{
+  font-family:'Playfair Display';
+  margin-bottom:15px;
+}
+
+.modal-box input,
+.modal-box textarea{
+  width:100%;
+  margin:8px 0;
+  padding:10px;
+  border-radius:10px;
+  border:none;
+  outline:none;
+  background:rgba(255,255,255,.08);
+  color:#fff;
+}
+
+.modal-box textarea{height:80px;resize:none}
+
+.modal-actions{
+  display:flex;
+  justify-content:space-between;
+  margin-top:15px;
+}
+
+.close{cursor:pointer;opacity:.7}
 </style>
 </head>
 
@@ -216,47 +265,63 @@ html,body{
   <div class="loader-content">
     <div class="spinner"></div>
     <div class="loading-text">Loading Virtual Tour</div>
-    <div class="loading-bar">
-      <div class="loading-fill" id="tourFill"></div>
-    </div>
+    <div class="loading-bar"><div class="loading-fill" id="tourFill"></div></div>
     <div class="loading-sub">Preparing environment...</div>
   </div>
 </div>
 
-<!-- FADE -->
 <div class="page-fade" id="pageFade"></div>
 
 <div class="stage">
 
-  <video class="bg-video" autoplay muted loop playsinline>
-    <source src="https://cdn.coverr.co/videos/coverr-night-city-lights-6430/1080p.mp4">
-  </video>
+<!-- BACKGROUND -->
+<div class="bg-fallback"></div>
 
-  <div class="bg-fallback"></div>
-  <div class="overlay"></div>
+<video class="bg-video" autoplay muted loop playsinline oncanplay="this.style.opacity='1'">
+  <source src="https://cdn.coverr.co/videos/coverr-night-city-lights-6430/1080p.mp4">
+</video>
 
-  <div class="particles" id="particles"></div>
+<div class="overlay"></div>
 
-  <div class="scene" id="scene">
+<div class="particles" id="particles"></div>
 
-    <div class="hero">
-      <div class="title">Phraimz Concepts</div>
-      <div class="subtitle">Enter architectural spaces before they exist.</div>
+<div class="scene" id="scene">
 
-      <div class="cta">
-        <a class="btn" onclick="enterTour()">ENTER TOUR</a>
-        <a class="btn" href="https://wa.me/2347066456141">WHATSAPP</a>
-        <a class="btn" href="mailto:ephraimikwueze@yahoo.com">EMAIL</a>
-      </div>
+  <div class="hero">
+    <div class="title">Phraimz Concepts</div>
+    <div class="subtitle">Enter a spatial architectural experience.</div>
 
+    <div class="cta">
+      <a class="btn" onclick="enterTour()">ENTER TOUR</a>
+      <a class="btn" onclick="openModal()">BOOK CONSULTATION</a>
+      <a class="btn" href="https://wa.me/2347066456141">WHATSAPP</a>
+      <a class="btn" href="mailto:ephraimikwueze@yahoo.com">EMAIL</a>
     </div>
 
+  </div>
+
+</div>
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <h2>Book Consultation</h2>
+
+    <input type="text" placeholder="Full Name">
+    <input type="email" placeholder="Email Address">
+    <textarea placeholder="Tell us about your project"></textarea>
+
+    <div class="modal-actions">
+      <div class="btn" onclick="submitForm()">Send</div>
+      <div class="close" onclick="closeModal()">Close</div>
+    </div>
   </div>
 </div>
 
 <script>
 
-/* ===== LOADER ===== */
+/* loader */
 let p=0;
 setInterval(()=>{
   p+=Math.random()*8;
@@ -265,7 +330,7 @@ setInterval(()=>{
   if(p===100)document.getElementById('loader').classList.add('hidden');
 },70);
 
-/* ===== PARTICLES ===== */
+/* particles */
 const particles=document.getElementById('particles');
 for(let i=0;i<30;i++){
   const s=document.createElement('span');
@@ -274,9 +339,8 @@ for(let i=0;i<30;i++){
   particles.appendChild(s);
 }
 
-/* ===== CAMERA ===== */
+/* camera */
 let cx=0,cy=0,tx=0,ty=0;
-
 function animate(){
   cx+=(tx-cx)*0.07;
   cy+=(ty-cy)*0.07;
@@ -290,43 +354,24 @@ document.addEventListener('mousemove',(e)=>{
   ty=(e.clientY/window.innerHeight-0.5)*20;
 });
 
-/* ===== GYROSCOPE FIX (FULL SUPPORT) ===== */
+/* gyro */
 let base=false,gx=0,gy=0;
-
 function handleGyro(e){
-  if(!base){
-    gx=e.gamma||0;
-    gy=e.beta||0;
-    base=true;
-  }
-
-  const x=((e.gamma||0)-gx)/3;
-  const y=((e.beta||0)-gy)/3;
-
-  tx=x*12;
-  ty=y*12;
+  if(!base){gx=e.gamma||0;gy=e.beta||0;base=true}
+  tx=((e.gamma||0)-gx)/3*12;
+  ty=((e.beta||0)-gy)/3*12;
 }
-
 function enableGyro(){
-  if(typeof DeviceOrientationEvent !== "undefined" &&
-     typeof DeviceOrientationEvent.requestPermission === "function"){
-
-    DeviceOrientationEvent.requestPermission()
-      .then(res=>{
-        if(res==="granted"){
-          window.addEventListener("deviceorientation",handleGyro);
-        }
-      });
-
-  } else {
-    window.addEventListener("deviceorientation",handleGyro);
-  }
+  if(DeviceOrientationEvent?.requestPermission){
+    DeviceOrientationEvent.requestPermission().then(r=>{
+      if(r==="granted")window.addEventListener("deviceorientation",handleGyro);
+    });
+  } else window.addEventListener("deviceorientation",handleGyro);
 }
-
 document.addEventListener("touchstart",enableGyro,{once:true});
 document.addEventListener("click",enableGyro,{once:true});
 
-/* ===== ENTER TOUR ===== */
+/* ENTER TOUR */
 function enterTour(){
   const tour=document.getElementById('tourLoader');
   const fill=document.getElementById('tourFill');
@@ -335,25 +380,26 @@ function enterTour(){
   tour.classList.add('active');
 
   let p=0;
-
   const i=setInterval(()=>{
     p+=Math.random()*10;
     if(p>=100)p=100;
-
     fill.style.width=p+"%";
 
     if(p===100){
       clearInterval(i);
-
       scene.classList.add('zoom-out');
-
       setTimeout(()=>fade.classList.add('active'),600);
-
-      setTimeout(()=>{
-        window.location.href="tour.html";
-      },1600);
+      setTimeout(()=>window.location.href="tour.html",1600);
     }
   },80);
+}
+
+/* MODAL */
+function openModal(){document.getElementById('modal').classList.add('active')}
+function closeModal(){document.getElementById('modal').classList.remove('active')}
+function submitForm(){
+  alert("Consultation request sent!");
+  closeModal();
 }
 
 </script>
