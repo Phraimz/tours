@@ -1,344 +1,422 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Phraimz Concepts | Immersive Tours</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Phraimz Concepts | Spatial 3D</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
 
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
 
-    html, body {
-      height: 100%;
-      overflow: hidden;
-      touch-action: none;
-      background: #000;
-      font-family: 'Inter', sans-serif;
-      color: #fff;
-    }
+html,body{
+  height:100%;
+  overflow:hidden;
+  background:#000;
+  font-family:'Inter',sans-serif;
+  color:#fff;
+}
 
-    /* GPU OPTIMIZATION */
-    #bg, #overlay, #title, #subtitle {
-      will-change: transform;
-    }
+/* ===== INITIAL LOADER ===== */
+.loader{
+  position:fixed;inset:0;
+  background:#000;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  z-index:9999;
+  transition:.8s;
+}
+.loader.hidden{opacity:0;visibility:hidden}
+.bar{width:240px;height:2px;background:rgba(255,255,255,.15);margin-top:20px}
+.fill{height:100%;width:0%;background:#fff}
 
-    /* LOADER */
-    .loader {
-      position: fixed;
-      inset: 0;
-      background: #000;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-      transition: opacity 1s ease, visibility 1s ease;
-    }
+/* ===== TOUR LOADER ===== */
+.tour-loader{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.92);
+  backdrop-filter:blur(20px);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:10000;
+  opacity:0;
+  visibility:hidden;
+  transition:.5s ease;
+}
+.tour-loader.active{opacity:1;visibility:visible}
 
-    .loader.hidden { opacity: 0; visibility: hidden; }
+.loader-content{text-align:center}
 
-    .loader-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 26px;
-      margin-bottom: 18px;
-      animation: pulse 1.4s infinite;
-    }
+.spinner{
+  width:60px;height:60px;
+  border:2px solid rgba(255,255,255,.2);
+  border-top:2px solid #fff;
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+  margin:0 auto 20px;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-    .loader-percent {
-      font-size: 14px;
-      opacity: 0.8;
-      margin-bottom: 20px;
-    }
+.loading-text{font-size:18px}
+.loading-sub{font-size:12px;opacity:.6;margin-top:10px}
 
-    .loader-bar {
-      width: 220px;
-      height: 2px;
-      background: rgba(255,255,255,0.15);
-      overflow: hidden;
-    }
+.loading-bar{
+  width:260px;height:2px;
+  background:rgba(255,255,255,.15);
+  margin:20px auto 0;
+  overflow:hidden;
+}
+.loading-fill{height:100%;width:0%;background:#fff}
 
-    .loader-bar-fill {
-      height: 100%;
-      width: 0%;
-      background: #fff;
-    }
+/* ===== ZOOM TRANSITION ===== */
+.zoom-out{
+  transform:scale(1.25);
+  filter:blur(25px) brightness(0);
+  transition:1s cubic-bezier(.2,.8,.2,1);
+}
 
-    @keyframes pulse {
-      0%,100%{opacity:0.5;}50%{opacity:1;}
-    }
+/* ===== SOFT FADE ===== */
+.page-fade{
+  position:fixed;
+  inset:0;
+  background:#000;
+  opacity:0;
+  pointer-events:none;
+  transition:1.2s ease;
+  z-index:20000;
+}
+.page-fade.active{opacity:1}
 
-    /* TOUR LOADER */
-    .tour-loader {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.92);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 10000;
-      opacity: 0;
-      visibility: hidden;
-      transition: 0.4s ease;
-    }
+/* ===== STAGE ===== */
+.stage{
+  position:fixed;
+  inset:0;
+  perspective:1200px;
+  overflow:hidden;
+}
 
-    .tour-loader.active { opacity: 1; visibility: visible; }
+/* background */
+.bg-video{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  filter:blur(10px) brightness(.5);
+  transform:scale(1.1);
+}
 
-    .spinner {
-      width: 40px;
-      height: 40px;
-      border: 2px solid rgba(255,255,255,0.2);
-      border-top: 2px solid #fff;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      margin-bottom: 10px;
-    }
+.bg-fallback{
+  position:absolute;
+  inset:-10%;
+  background:url('https://images.unsplash.com/photo-1496307653780-42ee777d4833?auto=format&fit=crop&w=1920&q=80')
+  center/cover no-repeat;
+  filter:blur(12px) brightness(.55);
+  transform:scale(1.2);
+}
 
-    @keyframes spin { to { transform: rotate(360deg); } }
+.overlay{
+  position:absolute;
+  inset:0;
+  background:radial-gradient(circle, rgba(0,0,0,.2), rgba(0,0,0,.92));
+}
 
-    /* BACKGROUND */
-    .bg {
-      position: fixed;
-      inset: 0;
-      background: url('https://images.unsplash.com/photo-1496307653780-42ee777d4833?auto=format&fit=crop&w=1920&q=80')
-      center/cover no-repeat;
-      filter: blur(16px) brightness(0.5);
-      transform: scale(1.15);
-      transition: 1.5s ease;
-    }
+/* ===== SCENE ===== */
+.scene{
+  position:absolute;
+  inset:0;
+  transform-style:preserve-3d;
+  transition:transform .08s linear;
+}
 
-    .overlay {
-      position: fixed;
-      inset: 0;
-      background: radial-gradient(circle, rgba(0,0,0,0.2), rgba(0,0,0,0.92));
-    }
+/* ===== HERO ===== */
+.hero{
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+}
 
-    /* HERO */
-    .hero {
-      position: relative;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      z-index: 2;
-      padding: 20px;
-      opacity: 0;
-      transform: scale(1.05);
-      transition: 1s ease;
-    }
+.title{
+  font-family:'Playfair Display',serif;
+  font-size:64px;
+  transform:translateZ(140px);
+}
 
-    body.loaded .hero {
-      opacity: 1;
-      transform: scale(1);
-    }
+.subtitle{
+  margin-top:10px;
+  max-width:520px;
+  color:rgba(255,255,255,.7);
+  transform:translateZ(90px);
+}
 
-    .title {
-      font-family: 'Playfair Display', serif;
-      font-size: 64px;
-      margin-bottom: 20px;
-    }
+.cta{
+  margin-top:40px;
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  justify-content:center;
+  transform:translateZ(180px);
+}
 
-    .subtitle {
-      font-size: 16px;
-      max-width: 520px;
-      color: rgba(255,255,255,0.7);
-    }
+.btn{
+  padding:14px 22px;
+  border-radius:50px;
+  border:1px solid rgba(255,255,255,.2);
+  background:rgba(255,255,255,.05);
+  backdrop-filter:blur(14px);
+  color:#fff;
+  cursor:pointer;
+  text-decoration:none;
+  transition:.3s;
+}
+.btn:hover{
+  transform:scale(1.08);
+  background:rgba(255,255,255,.15);
+}
 
-    /* BUTTONS */
-    .cta-group {
-      margin-top: 40px;
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
+/* ===== PARTICLES ===== */
+.particles{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+}
+.particles span{
+  position:absolute;
+  width:2px;height:2px;
+  background:rgba(255,255,255,.4);
+  border-radius:50%;
+  animation:float 12s linear infinite;
+}
+@keyframes float{
+  from{transform:translateY(100vh);opacity:0}
+  10%{opacity:1}
+  to{transform:translateY(-10vh);opacity:0}
+}
 
-    .btn {
-      padding: 14px 22px;
-      border-radius: 50px;
-      border: 1px solid rgba(255,255,255,0.25);
-      background: rgba(255,255,255,0.05);
-      color: #fff;
-      font-size: 13px;
-      cursor: pointer;
-      backdrop-filter: blur(10px);
-      text-decoration: none;
-      transition: 0.3s;
-    }
+/* ===== CONSULT MODAL ===== */
+.consult-modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.75);
+  backdrop-filter:blur(18px);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  opacity:0;
+  visibility:hidden;
+  transition:.4s;
+  z-index:15000;
+}
+.consult-modal.active{
+  opacity:1;
+  visibility:visible;
+}
 
-    .btn:hover {
-      transform: scale(1.05);
-      background: rgba(255,255,255,0.15);
-    }
+.consult-box{
+  width:90%;
+  max-width:420px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:20px;
+  padding:25px;
+  backdrop-filter:blur(20px);
+}
 
-    .btn.primary { background: rgba(255,255,255,0.18); }
+.consult-box input,
+.consult-box textarea{
+  width:100%;
+  margin-bottom:10px;
+  padding:12px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,.2);
+  background:rgba(0,0,0,.3);
+  color:#fff;
+  outline:none;
+}
 
-    /* TRANSITION */
-    .transition {
-      position: fixed;
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      background: white;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(0);
-      z-index: 10;
-      transition: 1.2s ease;
-    }
+.consult-box textarea{height:90px;resize:none}
 
-    .transition.active {
-      transform: translate(-50%, -50%) scale(50);
-    }
+.consult-actions{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
 
-    /* MOBILE */
-    @media (max-width: 768px) {
-      .title { font-size: 38px; }
-      .bg { filter: blur(10px) brightness(0.55); }
-    }
-  </style>
+.consult-actions button{
+  padding:10px;
+  border-radius:10px;
+  border:none;
+  cursor:pointer;
+  background:#fff;
+  color:#000;
+}
+
+/* mobile */
+@media(max-width:768px){
+  .title{font-size:40px}
+}
+</style>
 </head>
 
 <body>
 
-  <!-- LOADER -->
-  <div class="loader" id="loader">
-    <div class="loader-title">Loading Experience</div>
-    <div class="loader-percent" id="percent">0%</div>
-    <div class="loader-bar">
-      <div class="loader-bar-fill" id="bar"></div>
-    </div>
-  </div>
+<!-- LOADER -->
+<div class="loader" id="loader">
+  <div>Loading Experience</div>
+  <div class="bar"><div class="fill" id="fill"></div></div>
+</div>
 
-  <!-- TOUR LOADER -->
-  <div class="tour-loader" id="tourLoader">
+<!-- TOUR LOADER -->
+<div class="tour-loader" id="tourLoader">
+  <div class="loader-content">
     <div class="spinner"></div>
-    <div>Loading Tour...</div>
+    <div class="loading-text">Loading Virtual Tour</div>
+    <div class="loading-bar">
+      <div class="loading-fill" id="tourFill"></div>
+    </div>
+    <div class="loading-sub">Preparing environment...</div>
   </div>
+</div>
 
-  <div class="bg" id="bg"></div>
-  <div class="overlay" id="overlay"></div>
+<!-- FADE LAYER -->
+<div class="page-fade" id="pageFade"></div>
 
-  <div class="hero">
-    <h1 class="title" id="title">Phraimz Concepts</h1>
-    <p class="subtitle" id="subtitle">Experience architectural spaces before they exist.</p>
+<!-- CONSULT MODAL -->
+<div class="consult-modal" id="consultModal">
+  <div class="consult-box">
+    <input id="name" placeholder="Full Name">
+    <input id="project" placeholder="Project Type">
+    <textarea id="message" placeholder="Describe your project..."></textarea>
 
-    <div class="cta-group">
-      <button class="btn primary" onclick="enterTour()">ENTER TOUR</button>
-      <a class="btn" href="https://wa.me/2347066456141" target="_blank">WHATSAPP</a>
-      <a class="btn" href="#" onclick="bookConsultation()">BOOK CONSULTATION</a>
-      <a class="btn" href="mailto:ephraimikwueze@yahoo.com">EMAIL US</a>
+    <div class="consult-actions">
+      <button onclick="sendWhatsApp()">Send WhatsApp</button>
+      <button onclick="sendEmail()">Send Email</button>
+      <button onclick="closeConsult()">Close</button>
     </div>
   </div>
+</div>
 
-  <div class="transition" id="transition"></div>
+<div class="stage">
+
+  <video class="bg-video" autoplay muted loop playsinline>
+    <source src="https://cdn.coverr.co/videos/coverr-night-city-lights-6430/1080p.mp4">
+  </video>
+
+  <div class="bg-fallback"></div>
+  <div class="overlay"></div>
+
+  <div class="particles" id="particles"></div>
+
+  <div class="scene" id="scene">
+
+    <div class="hero">
+      <div class="title">Phraimz Concepts</div>
+      <div class="subtitle">Enter a spatial architectural experience.</div>
+
+      <div class="cta">
+        <a class="btn" onclick="enterTour()">ENTER TOUR</a>
+        <a class="btn" onclick="openConsult()">BOOK CONSULTATION</a>
+        <a class="btn" href="https://wa.me/2347066456141">WHATSAPP</a>
+        <a class="btn" href="mailto:ephraimikwueze@yahoo.com">EMAIL</a>
+      </div>
+
+    </div>
+
+  </div>
+</div>
 
 <script>
-/* ================= LOADER ================= */
-let progress = 0;
-const bar = document.getElementById('bar');
-const percent = document.getElementById('percent');
-const loader = document.getElementById('loader');
 
-const load = setInterval(() => {
-  progress += Math.random() * 10;
-  if (progress >= 100) progress = 100;
+/* loader */
+let p=0;
+setInterval(()=>{
+  p+=Math.random()*8;
+  if(p>100)p=100;
+  document.getElementById('fill').style.width=p+"%";
+  if(p===100)document.getElementById('loader').classList.add('hidden');
+},70);
 
-  bar.style.width = progress + "%";
-  percent.innerText = Math.floor(progress) + "%";
-
-  if (progress === 100) {
-    clearInterval(load);
-    setTimeout(() => {
-      loader.classList.add('hidden');
-      document.body.classList.add('loaded');
-    }, 500);
-  }
-}, 100);
-
-/* ================= TOUR ================= */
-function enterTour() {
-  document.getElementById('tourLoader').classList.add('active');
-
-  setTimeout(() => {
-    document.getElementById('transition').classList.add('active');
-  }, 600);
-
-  setTimeout(() => {
-    window.location.href = "tour.html";
-  }, 1500);
+/* particles */
+const particles=document.getElementById('particles');
+for(let i=0;i<30;i++){
+  const s=document.createElement('span');
+  s.style.left=Math.random()*100+"%";
+  s.style.animationDuration=(6+Math.random()*10)+"s";
+  particles.appendChild(s);
 }
 
-function bookConsultation() {
-  alert("Use WhatsApp for now. Booking system coming soon.");
+/* camera */
+let cx=0,cy=0,tx=0,ty=0;
+
+function animate(){
+  cx+=(tx-cx)*0.07;
+  cy+=(ty-cy)*0.07;
+  scene.style.transform=`rotateY(${cx}deg) rotateX(${-cy}deg)`;
+  requestAnimationFrame(animate);
 }
+animate();
 
-/* ================= PARALLAX ENGINE ================= */
-function updateParallax(x, y) {
-  document.getElementById('bg').style.transform =
-    `translate(${x*30}px,${y*30}px) scale(1.15)`;
-
-  document.getElementById('overlay').style.transform =
-    `translate(${x*15}px,${y*15}px)`;
-
-  document.getElementById('title').style.transform =
-    `translate(${x*10}px,${y*10}px)`;
-
-  document.getElementById('subtitle').style.transform =
-    `translate(${x*6}px,${y*6}px)`;
-}
-
-/* ================= DESKTOP ================= */
-document.addEventListener('mousemove', (e) => {
-  const x = (e.clientX / window.innerWidth) - 0.5;
-  const y = (e.clientY / window.innerHeight) - 0.5;
-  updateParallax(x, y);
+document.addEventListener('mousemove',(e)=>{
+  tx=(e.clientX/window.innerWidth-0.5)*20;
+  ty=(e.clientY/window.innerHeight-0.5)*20;
 });
 
-/* ================= MOBILE TOUCH ================= */
-document.addEventListener('touchmove', (e) => {
-  const t = e.touches[0];
-  const x = (t.clientX / window.innerWidth) - 0.5;
-  const y = (t.clientY / window.innerHeight) - 0.5;
-  updateParallax(x, y);
-}, { passive: true });
+/* ENTER TOUR */
+function enterTour(){
+  const tour=document.getElementById('tourLoader');
+  const fill=document.getElementById('tourFill');
+  const fade=document.getElementById('pageFade');
 
-/* ================= GYROSCOPE (UPGRADED) ================= */
-let baseGamma = 0;
-let baseBeta = 0;
-let ready = false;
+  tour.classList.add('active');
 
-let cx = 0, cy = 0;
+  let p=0;
 
-function clamp(v, min, max) {
-  return Math.max(min, Math.min(max, v));
+  const i=setInterval(()=>{
+    p+=Math.random()*10;
+    if(p>=100)p=100;
+
+    fill.style.width=p+"%";
+
+    if(p===100){
+      clearInterval(i);
+
+      scene.classList.add('zoom-out');
+
+      setTimeout(()=>fade.classList.add('active'),600);
+
+      setTimeout(()=>{
+        window.location.href="tour.html";
+      },1600);
+    }
+  },80);
 }
 
-function smooth(tx, ty) {
-  cx += (tx - cx) * 0.08;
-  cy += (ty - cy) * 0.08;
-  updateParallax(cx, cy);
+/* CONSULTATION */
+function openConsult(){
+  document.getElementById('consultModal').classList.add('active');
 }
 
-window.addEventListener('deviceorientation', (e) => {
-  if (!ready) {
-    baseGamma = e.gamma || 0;
-    baseBeta = e.beta || 0;
-    ready = true;
-  }
+function closeConsult(){
+  document.getElementById('consultModal').classList.remove('active');
+}
 
-  let x = ((e.gamma || 0) - baseGamma) / 18;
-  let y = ((e.beta || 0) - baseBeta) / 18;
+function sendWhatsApp(){
+  const n=name.value, pr=project.value, m=message.value;
+  window.open(`https://wa.me/2347066456141?text=${encodeURIComponent(n+" | "+pr+" | "+m)}`);
+}
 
-  x = clamp(x, -1, 1);
-  y = clamp(y, -1, 1);
+function sendEmail(){
+  window.location.href=`mailto:ephraimikwueze@yahoo.com?subject=${project.value}&body=${message.value}`;
+}
 
-  smooth(x, y);
-});
 </script>
 
 </body>
