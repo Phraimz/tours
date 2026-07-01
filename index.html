@@ -14,7 +14,7 @@
 
     body {
       font-family: 'Inter', sans-serif;
-      background: #000;
+      background: #553636;
       color: #fff;
       overflow: hidden;
     }
@@ -173,7 +173,42 @@
       gap: 12px;
       flex-wrap: wrap;
       justify-content: center;
+    }/* ===== EXPLORE PROJECTS BUTTON ===== */
+
+    .projects-link{
+
+        margin-top:70px;
+
+        display:flex;
+
+        justify-content:center;
+
+        transform:translateZ(120px);
+
     }
+
+    .projects-btn{
+
+        padding:16px 34px;
+
+        letter-spacing:3px;
+
+        font-weight:500;
+
+        background:rgba(255,255,255,.08);
+
+        border:1px solid rgba(255,255,255,.25);
+
+    }
+
+    .projects-btn:hover{
+
+        transform:translateY(-6px) scale(1.05);
+
+        background:rgba(255,255,255,.18);
+
+    }
+    
 
     .btn {
       padding: 14px 22px;
@@ -247,8 +282,14 @@
       <button class="btn primary" onclick="enterTour()">ENTER TOUR</button>
       <a class="btn" href="https://wa.me/2347066456141" target="_blank">WHATSAPP</a>
       <a class="btn" href="#" onclick="bookConsultation()">BOOK CONSULTATION</a>
-      <a class="btn" href="mailto:contact@ephraimikwueze@yahoo.com">EMAIL US</a>
+      <a class="btn" href="mailto:contact@ephraimikwueze@gmail.com">EMAIL US</a>
     </div>
+
+    <div class="projects-link">
+    <a class="btn projects-btn" href="projects.html">
+        EXPLORE PROJECTS
+    </a>
+</div>
   </div>
 
   <div class="transition" id="transition"></div>
