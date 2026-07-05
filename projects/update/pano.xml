@@ -181,7 +181,7 @@
     <control simulatemass="1" lockedmouse="0" lockedwheel="0" invertwheel="0" dblclickfullscreen="0" contextfullscreen="1" rubberband="1" hideabout="0" sensitivity="18" zoomcentercursor="1" contextprojections="1" speedwheel="1" lockedkeyboardzoom="0" lockedkeyboard="0" invertcontrol="1" contextvr="1"/>
   </panorama>
   <masternode>
-    <userdata title="Update Lounge" tags="" copyright="" comment="" description="" author=""/>
+    <userdata title="Open Pavilion" tags="" copyright="" comment="" description="" author=""/>
     <animationsequences>
       <sequence title="Animation01">
         <sequenceelement index="0" nodeid="node3" cliptitle="Clip01" startview="-11.8033/-0.991784/118.522/4"/>
