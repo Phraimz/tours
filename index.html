@@ -290,7 +290,7 @@
     </p>
 
     <div class="cta-group">
-      <button class="btn primary" onclick="enterTour()">ENTER TOUR</button>
+      <button class="btn primary" href="#" onclick="enterTour()">ENTER TOUR</button>
       <a class="btn" href="https://wa.me/2347066456141" target="_blank">WHATSAPP</a>
       <a class="btn" href="#" onclick="bookConsultation()">BOOK CONSULTATION</a>
       <a class="btn" href="mailto:contact@ephraimikwueze@yahoo.com">EMAIL US</a>
@@ -327,18 +327,18 @@
       }
     }, 120);
 
-    function enterTour() {
-      const tourLoader = document.getElementById('tourLoader');
-      tourLoader.classList.add('active');
+    function enterTour(event){
 
-      setTimeout(() => {
-        const t = document.getElementById('transition');
-        t.classList.add('active');
-      }, 600);
+      event.preventDefault();
 
-      setTimeout(() => {
-        window.location.href = "tour.html";
-      }, 1500);
+      document.body.classList.add("page-transition");
+
+      setTimeout(function(){
+
+          window.location.href="tour.html";
+
+      },900);
+
     }
 
     function bookConsultation() {
