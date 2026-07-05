@@ -327,18 +327,18 @@
       }
     }, 120);
 
-    function enterTour() {
-      const tourLoader = document.getElementById('tourLoader');
-      tourLoader.classList.add('active');
+    function enterTour(event){
 
-      setTimeout(() => {
-        const t = document.getElementById('transition');
-        t.classList.add('active');
-      }, 600);
+      event.preventDefault();
 
-      setTimeout(() => {
-        window.location.href = "tour.html";
-      }, 1500);
+      document.body.classList.add("page-transition");
+
+      setTimeout(function(){
+
+          window.location.href="tour.html";
+
+      },900);
+
     }
 
     function bookConsultation() {
